@@ -7,6 +7,7 @@
     "start": "vite"
   },
   "dependencies": {
+    "@solid-primitives/range": "^0.1.15",
     "@solidjs/router": "^0.10.6",
     "@suid/icons-material": "*",
     "@suid/material": "*",
