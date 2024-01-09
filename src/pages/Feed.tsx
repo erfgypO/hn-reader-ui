@@ -25,22 +25,28 @@ export default function Feed() {
     const [loading, setLoading] = createSignal(false);
 
     async function loadItems(forPage: number) {
+        setLoading(true)
         const res = await fetch(`https://hn-api.azurewebsites.net/api/topstories?page=${forPage}`);
-        return await res.json() as Item[];
+        setItems(await res.json() as Item[]);
+        setLoading(false);
+    }
+
+
+
+    function onNextPage() {
+        setPage(page() + 1);
+        window.scrollTo(0, 0);
+    }
+
+    function onPrevPage() {
+        setPage(page() - 1);
+        window.scrollTo(0, 0);
     }
 
     createEffect(async () => {
         console.log("Page changed to", page());
-        setLoading(true)
-        setItems(await loadItems(page()));
-        setLoading(false)
+        await loadItems(page());
     })
-
-    /* onMount(async () => {
-        setLoading(true)
-        setItems(await loadItems(page()));
-        setLoading(false)
-    }) */
 
     return (
         <Stack spacing={2}>
@@ -49,9 +55,9 @@ export default function Feed() {
                 <ItemCard item={item} />
             }</For>
             <ButtonGroup variant="text" style="margin: auto; margin-top: 10px">
-                <Button disabled={page() === 0} onClick={() => setPage(page() - 1)}>Prev</Button>
+                <Button disabled={page() === 0} onClick={onPrevPage}>Prev</Button>
                 <Button>Page {page() + 1}</Button>
-                <Button onClick={() => setPage(page() + 1)}>Next</Button>
+                <Button onClick={onNextPage}>Next</Button>
             </ButtonGroup>
             </Show>
         </Stack>
